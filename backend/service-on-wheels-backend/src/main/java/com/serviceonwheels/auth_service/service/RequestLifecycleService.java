@@ -2,12 +2,14 @@ package com.serviceonwheels.auth_service.service;
 
 import com.serviceonwheels.auth_service.dto.ServiceRequestResponse;
 import com.serviceonwheels.auth_service.exception.BadRequestException;
+import com.serviceonwheels.auth_service.exception.ForbiddenException;
 import com.serviceonwheels.auth_service.exception.ServiceRequestNotFoundException;
+import com.serviceonwheels.auth_service.exception.UserNotFoundException;
 import com.serviceonwheels.auth_service.model.Mechanic;
 import com.serviceonwheels.auth_service.model.RequestStatus;
 import com.serviceonwheels.auth_service.model.ServiceRequest;
-import com.serviceonwheels.auth_service.repository.MechanicRepository;
 import com.serviceonwheels.auth_service.repository.ServiceRequestRepository;
+import com.serviceonwheels.auth_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,8 +28,8 @@ import java.util.List;
 public class RequestLifecycleService {
 
     private final ServiceRequestRepository serviceRequestRepository;
-    private final MechanicRepository mechanicRepository;
     private final MechanicService mechanicService;
+    private final UserRepository userRepository;
 
     /**
      * Accept a request: PENDING → ASSIGNED.
@@ -131,6 +133,24 @@ public class RequestLifecycleService {
      */
     public ServiceRequestResponse cancelRequest(String requestId) {
         ServiceRequest request = findRequest(requestId);
+        return cancelRequest(request);
+    }
+
+    public ServiceRequestResponse cancelOwnedRequest(String requestId, String email) {
+        ServiceRequest request = findRequest(requestId);
+        String userId = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found."))
+                .getId();
+
+        if (!userId.equals(request.getUserId())) {
+            throw new ForbiddenException("You can only cancel your own service requests.");
+        }
+
+        return cancelRequest(request);
+    }
+
+    private ServiceRequestResponse cancelRequest(ServiceRequest request) {
+        String requestId = request.getId();
 
         if (request.getStatus() == RequestStatus.COMPLETED) {
             throw new IllegalStateException("Cannot cancel an already completed request.");

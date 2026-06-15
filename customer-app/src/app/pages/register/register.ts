@@ -71,7 +71,6 @@ export class Register {
         email: raw.email,
         password: raw.password,
         phoneNumber: raw.phoneNumber,
-        role: 'USER',
       })
       .subscribe({
         next: () => {

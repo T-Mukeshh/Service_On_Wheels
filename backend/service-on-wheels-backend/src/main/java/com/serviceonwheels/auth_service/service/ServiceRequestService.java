@@ -2,8 +2,6 @@ package com.serviceonwheels.auth_service.service;
 
 import com.serviceonwheels.auth_service.dto.CreateServiceRequest;
 import com.serviceonwheels.auth_service.dto.ServiceRequestResponse;
-import com.serviceonwheels.auth_service.exception.ForbiddenException;
-import com.serviceonwheels.auth_service.exception.ServiceRequestNotFoundException;
 import com.serviceonwheels.auth_service.exception.UserNotFoundException;
 import com.serviceonwheels.auth_service.model.RequestStatus;
 import com.serviceonwheels.auth_service.model.ServiceRequest;
@@ -58,19 +56,6 @@ public class ServiceRequestService {
         return serviceRequestRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
                 .map(this::toResponse)
                 .toList();
-    }
-
-    public ServiceRequestResponse updateStatus(String serviceRequestId, RequestStatus newStatus, String email) {
-        String userId = resolveUserId(email);
-        ServiceRequest entity = serviceRequestRepository.findById(serviceRequestId)
-                .orElseThrow(() -> new ServiceRequestNotFoundException("Service request not found."));
-
-        if (!userId.equals(entity.getUserId())) {
-            throw new ForbiddenException("You can only update your own service requests.");
-        }
-
-        entity.setStatus(newStatus);
-        return toResponse(serviceRequestRepository.save(entity));
     }
 
     private String resolveUserId(String email) {

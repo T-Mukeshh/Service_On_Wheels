@@ -2,13 +2,15 @@ package com.serviceonwheels.auth_service.service;
 
 import com.serviceonwheels.auth_service.dto.ServiceRequestResponse;
 import com.serviceonwheels.auth_service.exception.BadRequestException;
+import com.serviceonwheels.auth_service.exception.ForbiddenException;
 import com.serviceonwheels.auth_service.exception.ServiceRequestNotFoundException;
 import com.serviceonwheels.auth_service.model.Mechanic;
 import com.serviceonwheels.auth_service.model.MechanicStatus;
 import com.serviceonwheels.auth_service.model.RequestStatus;
 import com.serviceonwheels.auth_service.model.ServiceRequest;
-import com.serviceonwheels.auth_service.repository.MechanicRepository;
+import com.serviceonwheels.auth_service.model.User;
 import com.serviceonwheels.auth_service.repository.ServiceRequestRepository;
+import com.serviceonwheels.auth_service.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +36,7 @@ class RequestLifecycleServiceTest {
     private MechanicService mechanicService;
 
     @Mock
-    private MechanicRepository mechanicRepository;
+    private UserRepository userRepository;
 
     @InjectMocks
     private RequestLifecycleService requestLifecycleService;
@@ -46,6 +48,7 @@ class RequestLifecycleServiceTest {
     void setUp() {
         serviceRequest = ServiceRequest.builder()
                 .id("req-1")
+                .userId("user-1")
                 .status(RequestStatus.PENDING)
                 .latitude(12.34)
                 .longitude(56.78)
@@ -159,5 +162,31 @@ class RequestLifecycleServiceTest {
 
         assertThrows(IllegalStateException.class, () -> requestLifecycleService.cancelRequest("req-1"));
         verify(mechanicService, never()).releaseFromRequest(anyString());
+    }
+
+    @Test
+    void cancelOwnedRequest_rejectsDifferentUser() {
+        when(serviceRequestRepository.findById("req-1")).thenReturn(Optional.of(serviceRequest));
+        when(userRepository.findByEmail("attacker@example.com"))
+                .thenReturn(Optional.of(User.builder().id("user-2").build()));
+
+        assertThrows(
+                ForbiddenException.class,
+                () -> requestLifecycleService.cancelOwnedRequest("req-1", "attacker@example.com"));
+
+        verify(serviceRequestRepository, never()).save(any());
+    }
+
+    @Test
+    void cancelOwnedRequest_allowsOwner() {
+        when(serviceRequestRepository.findById("req-1")).thenReturn(Optional.of(serviceRequest));
+        when(userRepository.findByEmail("owner@example.com"))
+                .thenReturn(Optional.of(User.builder().id("user-1").build()));
+        when(serviceRequestRepository.save(any(ServiceRequest.class))).thenAnswer(i -> i.getArgument(0));
+
+        ServiceRequestResponse response =
+                requestLifecycleService.cancelOwnedRequest("req-1", "owner@example.com");
+
+        assertEquals(RequestStatus.CANCELLED, response.getStatus());
     }
 }

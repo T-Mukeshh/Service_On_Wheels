@@ -5,7 +5,6 @@ export interface RegisterRequest {
   email: string;
   password: string;
   phoneNumber: string;
-  role?: UserRole;
 }
 
 export interface LoginRequest {

@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
+import { isServiceApiUrl } from '../config/api.config';
 import { AUTH_TOKEN_STORAGE_KEY } from '../models/auth-storage';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
@@ -9,11 +10,11 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  if (req.url.includes('/api/auth/')) {
+  if (!isServiceApiUrl(req.url) || req.url.includes('/api/auth/')) {
     return next(req);
   }
 
-  const token = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+  const token = window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
   if (!token) {
     return next(req);
   }

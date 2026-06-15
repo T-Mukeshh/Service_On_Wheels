@@ -188,11 +188,16 @@ http://localhost:4200
 Configure the following values before running:
 
 ```properties
-spring.data.mongodb.uri=
-jwt.secret=
-spring.mail.username=
-spring.mail.password=
+MONGODB_URI=
+JWT_SECRET=
+FRONTEND_RESET_URL=
+MAIL_USERNAME=
+MAIL_PASSWORD=
 ```
+
+`JWT_SECRET` must be a cryptographically random secret of at least 32 bytes. Use
+`.env.example` as a reference, but inject real values through the deployment
+platform or shell environment. Spring Boot does not automatically load `.env`.
 
 Never commit:
 

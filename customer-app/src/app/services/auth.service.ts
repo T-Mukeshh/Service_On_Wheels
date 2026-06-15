@@ -1,9 +1,11 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
+import { API_BASE_URL } from '../config/api.config';
 import { AUTH_TOKEN_STORAGE_KEY } from '../models/auth-storage';
 import type { AuthResponse, LoginRequest, RegisterRequest } from '../models/auth.models';
+import type { ApiResponse } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -13,22 +15,24 @@ export class AuthService {
   // Expose reactive signal for navbar
   readonly isAuthenticated = signal<boolean>(this.hasToken());
 
-  private readonly apiBase = 'http://localhost:8081';
+  private readonly apiBase = API_BASE_URL;
 
   register(body: RegisterRequest): Observable<AuthResponse> {
-    const payload: RegisterRequest = {
-      ...body,
-      role: body.role ?? 'USER',
-    };
     return this.http
-      .post<AuthResponse>(`${this.apiBase}/api/auth/register`, payload)
-      .pipe(tap((res) => this.saveToken(res.token)));
+      .post<ApiResponse<AuthResponse>>(`${this.apiBase}/api/auth/register`, body)
+      .pipe(
+        map(res => res.data),
+        tap((data) => this.saveToken(data.token))
+      );
   }
 
   login(body: LoginRequest): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.apiBase}/api/auth/login`, body)
-      .pipe(tap((res) => this.saveToken(res.token)));
+      .post<ApiResponse<AuthResponse>>(`${this.apiBase}/api/auth/login`, body)
+      .pipe(
+        map(res => res.data),
+        tap((data) => this.saveToken(data.token))
+      );
   }
 
   logout(): void {
@@ -66,16 +70,18 @@ export class AuthService {
   }
 
   forgotPassword(email: string): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.apiBase}/api/auth/forgot-password`, { email });
+    return this.http.post<ApiResponse<any>>(`${this.apiBase}/api/auth/forgot-password`, { email })
+      .pipe(map(res => ({ message: res.message })));
   }
 
   resetPassword(token: string, password: string): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.apiBase}/api/auth/reset-password`, { token, password });
+    return this.http.post<ApiResponse<any>>(`${this.apiBase}/api/auth/reset-password`, { token, password })
+      .pipe(map(res => ({ message: res.message })));
   }
 
   validateResetToken(token: string): Observable<{ message: string; email: string }> {
-    return this.http.get<{ message: string; email: string }>(`${this.apiBase}/api/auth/validate-reset-token`, {
+    return this.http.get<ApiResponse<{ email: string }>>(`${this.apiBase}/api/auth/validate-reset-token`, {
       params: { token },
-    });
+    }).pipe(map(res => ({ message: res.message, email: res.data.email })));
   }
 }

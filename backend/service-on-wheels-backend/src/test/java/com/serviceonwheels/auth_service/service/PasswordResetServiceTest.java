@@ -7,6 +7,9 @@ import com.serviceonwheels.auth_service.model.PasswordResetToken;
 import com.serviceonwheels.auth_service.model.User;
 import com.serviceonwheels.auth_service.repository.PasswordResetTokenRepository;
 import com.serviceonwheels.auth_service.repository.UserRepository;
+import jakarta.mail.Session;
+import jakarta.mail.internet.MimeMessage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,10 +19,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,8 +42,17 @@ class PasswordResetServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private JavaMailSender mailSender;
+
     @InjectMocks
     private PasswordResetService passwordResetService;
+
+    @BeforeEach
+    void setUpMailSender() {
+        MimeMessage message = new MimeMessage(Session.getInstance(new Properties()));
+        lenient().when(mailSender.createMimeMessage()).thenReturn(message);
+    }
 
     // ── Forgot Password ──────────────────────────────────────────
 
@@ -58,7 +72,7 @@ class PasswordResetServiceTest {
 
             Map<String, String> result = passwordResetService.handleForgotPassword(req);
 
-            assertTrue(result.get("message").contains("If an account"));
+            assertEquals("If the account exists, reset instructions have been sent.", result.get("message"));
             verify(tokenRepository).deleteAllByEmail("test@example.com");
             verify(tokenRepository).save(any(PasswordResetToken.class));
         }
@@ -73,7 +87,7 @@ class PasswordResetServiceTest {
 
             Map<String, String> result = passwordResetService.handleForgotPassword(req);
 
-            assertTrue(result.get("message").contains("If an account"));
+            assertEquals("If the account exists, reset instructions have been sent.", result.get("message"));
             verify(tokenRepository, never()).save(any());
         }
 

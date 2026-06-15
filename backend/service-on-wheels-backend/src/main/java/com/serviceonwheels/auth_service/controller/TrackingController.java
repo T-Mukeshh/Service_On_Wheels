@@ -1,8 +1,11 @@
 package com.serviceonwheels.auth_service.controller;
 
+import com.serviceonwheels.auth_service.dto.ApiResponse;
 import com.serviceonwheels.auth_service.dto.TrackingResponse;
 import com.serviceonwheels.auth_service.service.TrackingSseService;
 import com.serviceonwheels.auth_service.service.TrackingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/tracking")
 @RequiredArgsConstructor
+@Tag(name = "Tracking Controller", description = "Endpoints for real-time mechanic tracking")
 public class TrackingController {
 
     private final TrackingService trackingService;
@@ -33,12 +37,13 @@ public class TrackingController {
      * @param principal the authenticated user
      * @return tracking response with mechanic position, ETA, and status
      */
+    @Operation(summary = "Get Tracking State", description = "Returns the current position and ETA of the mechanic for a request")
     @GetMapping("/{requestId}")
-    public ResponseEntity<TrackingResponse> getTracking(
+    public ResponseEntity<ApiResponse<TrackingResponse>> getTracking(
             @PathVariable("requestId") String requestId,
             Principal principal) {
         TrackingResponse response = trackingService.getTracking(requestId, principal.getName());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success("Tracking data retrieved", response));
     }
 
     /**
@@ -49,6 +54,7 @@ public class TrackingController {
      * @param principal the authenticated user
      * @return an SSE emitter that publishes tracking updates
      */
+    @Operation(summary = "Stream Tracking (SSE)", description = "Opens a Server-Sent Events stream for real-time tracking updates")
     @GetMapping("/stream/{requestId}")
     public SseEmitter streamTracking(
             @PathVariable("requestId") String requestId,

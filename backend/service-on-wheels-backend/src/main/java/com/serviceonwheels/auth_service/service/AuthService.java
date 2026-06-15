@@ -3,7 +3,6 @@ package com.serviceonwheels.auth_service.service;
 import com.serviceonwheels.auth_service.dto.AuthResponse;
 import com.serviceonwheels.auth_service.dto.LoginRequest;
 import com.serviceonwheels.auth_service.dto.RegisterRequest;
-import com.serviceonwheels.auth_service.exception.BadRequestException;
 import com.serviceonwheels.auth_service.exception.InvalidCredentialsException;
 import com.serviceonwheels.auth_service.exception.UserAlreadyExistsException;
 import com.serviceonwheels.auth_service.model.Role;
@@ -35,11 +34,6 @@ public class AuthService {
     public AuthResponse registerUser(RegisterRequest request) {
         log.info("Registration attempt for email: {}", request.getEmail());
 
-        Role role = request.getRole() != null ? request.getRole() : Role.USER;
-        if (role == Role.ADMIN) {
-            throw new BadRequestException("Self-registration as ADMIN is not allowed.");
-        }
-
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException(
                     "An account with email '" + request.getEmail() + "' already exists.");
@@ -52,7 +46,7 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(hashedPassword)
                 .phoneNumber(request.getPhoneNumber())
-                .role(role)
+                .role(Role.USER)
                 .build();
 
         User savedUser = userRepository.save(user);
