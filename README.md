@@ -121,31 +121,6 @@ Spring Boot Backend
         │
         ▼
 MongoDB Database
-```
-
-This architecture ensures separation of concerns, maintainability, and scalability.
-
----
-
-## 📸 Screenshots
-
-Add screenshots of:
-
-* Landing Page
-* Login Page
-* Registration Page
-* Dashboard
-* Request Assistance Page
-* Map Location Selection
-* Request History
-* Profile Page
-
----
-
-## Installation
-
-### Clone Repository
-
 ```bash
 git clone https://github.com/PhoenixX18/ServiceOnWheels1.git
 ```
