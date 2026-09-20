@@ -49,4 +49,7 @@ export interface ServiceRequestResponse {
   serviceStartedAt?: string;
   completedAt?: string;
   cancelledAt?: string;
+
+  // Phase 5 - Payment
+  paymentStatus?: 'CREATED' | 'AUTHORIZED' | 'CAPTURED' | 'FAILED' | 'REFUNDED';
 }

@@ -220,9 +220,22 @@
                   <a [routerLink]="['/track', r.id]" class="btn btn-primary btn-sm w-full">
                     Track Mechanic
                   </a>
+                } @else if (r.status === 'COMPLETED') {
+                  @if (r.paymentStatus === 'CAPTURED') {
+                    <div class="text-center font-semibold text-sm" style="color:var(--status-completed); padding: 0.5rem;">
+                      <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="display:inline-block; margin-right:4px;">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                      </svg>
+                      Paid
+                    </div>
+                  } @else {
+                    <button class="btn btn-primary btn-sm w-full" (click)="pay(r)" [disabled]="payingId() === r.id">
+                      {{ payingId() === r.id ? 'Processing...' : 'Pay Now' }}
+                    </button>
+                  }
                 } @else {
                   <button class="btn btn-secondary btn-sm w-full" disabled>
-                    {{ r.status === 'COMPLETED' ? 'Completed' : 'Cancelled' }}
+                    Cancelled
                   </button>
                 }
               </div>

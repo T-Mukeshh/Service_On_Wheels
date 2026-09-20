@@ -81,7 +81,7 @@ public class AuthService {
         }
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new InvalidCredentialsException("User not found."));
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password. Please try again."));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtUtil.generateToken(userDetails, user.getRole().name());

@@ -3,8 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { ServiceRequestResponse } from '../../models/service-request.models';
-import { ServiceRequestService } from '../../services/service-request.service';
-import { ToastService } from '../../services/toast.service';
+import { PaymentService } from '../../services/payment.service';
 
 const STATUS_ORDER = ['PENDING', 'ASSIGNED', 'ON_THE_WAY', 'ARRIVED', 'IN_SERVICE', 'COMPLETED'];
 
@@ -16,12 +15,14 @@ const STATUS_ORDER = ['PENDING', 'ASSIGNED', 'ON_THE_WAY', 'ARRIVED', 'IN_SERVIC
 })
 export class MyRequests implements OnInit {
   private readonly api = inject(ServiceRequestService);
+  private readonly paymentService = inject(PaymentService);
   private readonly toast = inject(ToastService);
 
   readonly requests = signal<ServiceRequestResponse[]>([]);
   readonly loading = signal(true);
   readonly errorMessage = signal<string | null>(null);
   readonly currentFilter = signal<string>('All');
+  readonly payingId = signal<string | null>(null);
 
   readonly filteredRequests = computed(() => {
     const filter = this.currentFilter();
@@ -104,6 +105,62 @@ export class MyRequests implements OnInit {
     const stepIndex = STATUS_ORDER.indexOf(stepStatus);
     if (currentIndex === -1) return false;
     return stepIndex <= currentIndex;
+  }
+
+  pay(request: ServiceRequestResponse): void {
+    this.payingId.set(request.id);
+    this.paymentService.createOrder(request.id).subscribe({
+      next: (order) => {
+        const options = {
+          key: order.keyId,
+          amount: order.amount,
+          currency: order.currency,
+          name: 'Service On Wheels',
+          description: `Payment for request ${request.id}`,
+          order_id: order.orderId,
+          handler: (response: any) => {
+            this.verifyPayment(response.razorpay_order_id, response.razorpay_payment_id, response.razorpay_signature);
+          },
+          prefill: {
+            name: 'Customer', // Would be better to pass real user name, but we don't have it in the request payload easily
+            email: 'customer@example.com',
+            contact: ''
+          },
+          theme: {
+            color: '#8B1E1E'
+          },
+          modal: {
+             ondismiss: () => {
+                 this.payingId.set(null);
+             }
+          }
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      },
+      error: (err) => {
+        this.payingId.set(null);
+        this.toast.error('Payment Error', extractHttpMessage(err));
+      }
+    });
+  }
+
+  private verifyPayment(orderId: string, paymentId: string, signature: string): void {
+    this.paymentService.verifyPayment({
+      razorpayOrderId: orderId,
+      razorpayPaymentId: paymentId,
+      razorpaySignature: signature
+    }).subscribe({
+      next: (res) => {
+        this.payingId.set(null);
+        this.toast.success('Payment Successful', 'Thank you for your payment!');
+        this.load(); // Reload to update status
+      },
+      error: (err) => {
+        this.payingId.set(null);
+        this.toast.error('Verification Error', extractHttpMessage(err));
+      }
+    });
   }
 }
 

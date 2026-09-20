@@ -1,5 +1,6 @@
 package com.serviceonwheels.auth_service.dto;
 
+import com.serviceonwheels.auth_service.model.PaymentStatus;
 import com.serviceonwheels.auth_service.model.RequestStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -83,4 +84,7 @@ public class ServiceRequestResponse {
     
     @Schema(description = "Timestamp when the request was cancelled")
     private LocalDateTime cancelledAt;
+    
+    @Schema(description = "Payment status of the request")
+    private PaymentStatus paymentStatus;
 }

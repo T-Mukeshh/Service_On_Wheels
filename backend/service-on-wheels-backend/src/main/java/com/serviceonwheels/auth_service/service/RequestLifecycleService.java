@@ -216,6 +216,7 @@ public class RequestLifecycleService {
                 .serviceStartedAt(entity.getServiceStartedAt())
                 .completedAt(entity.getCompletedAt())
                 .cancelledAt(entity.getCancelledAt())
+                .paymentStatus(entity.getPaymentStatus())
                 .build();
     }
 }

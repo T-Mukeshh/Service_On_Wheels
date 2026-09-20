@@ -1,94 +1,92 @@
 <div class="landing-page">
 
-  <!-- ═══ HERO SECTION ════════════════════════════════ -->
+  <!-- ═══ HERO ════════════════════════════════════════ -->
   <section class="hero-section">
-    <!-- Clean, matte background without orbs/grids -->
     <div class="hero-bg">
-      <div class="texture-overlay"></div>
+      <div class="road-noise"></div>
+      <div class="glow-orb orb-red"></div>
+      <div class="glow-orb orb-amber"></div>
     </div>
 
     <div class="container hero-inner">
-      <div class="hero-content animate-fade-in">
-        <div class="hero-pill mb-6">
-          <span class="status-dot dot-completed"></span>
-          Premium Roadside Assistance
+      <div class="hero-content">
+        <div class="live-pill">
+          <span class="live-dot"></span>
+          Live dispatch network
         </div>
 
         <h1 class="hero-title">
           Stranded?<br>
-          Help is
-          <span class="hero-title-accent">Minutes Away</span>
+          Help is <span class="accent-signal">Minutes Away.</span>
         </h1>
 
-        <p class="hero-subtitle mt-6 mb-10">
+        <p class="hero-sub">
           Service on Wheels connects you to verified mechanics and tow trucks in real-time.
           Professional dispatch. Transparent tracking. 24 hours a day.
         </p>
 
-        <div class="hero-cta">
-          <a routerLink="/register" class="btn btn-primary btn-xl">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
+        <div class="hero-actions">
+          <a routerLink="/register" class="btn btn-signal">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             Request Assistance
           </a>
-          <a routerLink="/login" class="btn btn-secondary btn-xl">
-            Sign In
-          </a>
+          <a routerLink="/login" class="btn btn-raised">Sign In</a>
         </div>
 
-        <!-- Trust badges -->
-        <div class="hero-trust mt-10">
-          <div class="trust-item">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--text-muted)" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-            </svg>
+        <div class="trust-badges">
+          <span class="trust-badge">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="var(--hazard-amber)" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             No subscription
-          </div>
-          <div class="trust-sep"></div>
-          <div class="trust-item">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--text-muted)" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-            </svg>
+          </span>
+          <span class="trust-badge">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="var(--hazard-amber)" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             24/7 Dispatch
-          </div>
-          <div class="trust-sep"></div>
-          <div class="trust-item">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--text-muted)" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-            </svg>
+          </span>
+          <span class="trust-badge">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="var(--hazard-amber)" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             Verified professionals
-          </div>
+          </span>
         </div>
       </div>
 
-      <!-- Sophisticated Visual Element: Mechanic Dispatch Card -->
-      <div class="hero-visual animate-fade-in delay-200">
-        <div class="preview-card">
-          <div class="preview-header">
-            <div class="preview-badge">DISPATCH CONFIRMED</div>
-            <div class="preview-time">ETA: 8 Min</div>
+      <!-- Hero Dispatch Widget -->
+      <div class="hero-widget">
+        <div class="widget-card">
+          <div class="widget-head">
+            <div class="wh-left">
+              <span class="live-dot"></span>
+              <span class="wh-label">Dispatch confirmed</span>
+            </div>
+            <span class="eta-chip">ETA 8 min</span>
           </div>
-          
-          <div class="preview-map-placeholder">
-            <div class="map-route-line"></div>
-            <div class="map-marker-user"></div>
-            <div class="map-marker-mech">
-              <div class="mech-indicator"></div>
+
+          <div class="widget-map-area">
+            <svg viewBox="0 0 400 140" class="route-svg" preserveAspectRatio="xMidYMid meet">
+              <path d="M 55 95 C 120 30, 280 30, 345 95" class="route-bg-dashes"/>
+              <path d="M 55 95 C 120 30, 280 30, 345 95" class="dispatch-route-draw"/>
+            </svg>
+            <div class="map-pin pin-user">
+              <div class="pin-pulse"></div>
+              <div class="pin-icon">📍</div>
+            </div>
+            <div class="map-pin pin-mech">
+              <div class="mech-pulse"></div>
+              <div class="pin-icon">🔧</div>
             </div>
           </div>
-          
-          <div class="preview-details">
-            <div class="preview-issue">
-              <h4 class="issue-title">Battery Jump Start</h4>
-              <p class="issue-vehicle">Tesla Model 3 • MH 01 AB 1234</p>
+
+          <div class="widget-details">
+            <div class="wd-issue">
+              <h4>Battery Jump Start</h4>
+              <p>Tesla Model 3 · MH 01 AB 1234</p>
             </div>
-            
-            <div class="preview-mechanic">
+            <div class="wd-mechanic">
               <div class="mech-avatar">R</div>
-              <div class="mech-info">
-                <div class="mech-name">Ravi Kumar</div>
-                <div class="mech-rating">⭐ 4.9 • Certified</div>
+              <div class="mech-meta">
+                <span class="mech-name">Ravi Kumar</span>
+                <span class="mech-rating">
+                  <span class="star">★</span> 4.9 · Certified
+                </span>
               </div>
             </div>
           </div>
@@ -97,276 +95,219 @@
     </div>
   </section>
 
-  <!-- ═══ STATS STRIP ══════════════════════════════════ -->
-  <section class="stats-strip">
+  <!-- Dashed lane-marking section divider -->
+  <div class="lane-divider" aria-hidden="true"><div class="dashes"></div></div>
+
+  <!-- ═══ STATS ═══════════════════════════════════════ -->
+  <section class="stats-strip" data-reveal>
     <div class="container stats-inner">
-      <div class="stat-item animate-fade-in delay-100">
-        <div class="stat-number">10,000+</div>
-        <div class="stat-label">Assists Completed</div>
+      <div class="stat-item">
+        <div class="stat-number" data-count-target="10,000" data-count-suffix="+">0</div>
+        <div class="stat-label">Assists completed</div>
       </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item animate-fade-in delay-200">
-        <div class="stat-number">&lt; 15 min</div>
-        <div class="stat-label">Avg. Response Time</div>
+      <div class="stat-divider-v"></div>
+      <div class="stat-item">
+        <div class="stat-number" data-count-target="15" data-count-prefix="< " data-count-suffix=" min">0</div>
+        <div class="stat-label">Avg. response time</div>
       </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item animate-fade-in delay-300">
-        <div class="stat-number">4.9 / 5</div>
-        <div class="stat-label">Customer Rating</div>
+      <div class="stat-divider-v"></div>
+      <div class="stat-item">
+        <div class="stat-number" data-count-target="4.9" data-count-suffix=" / 5">0</div>
+        <div class="stat-label">Customer rating</div>
       </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item animate-fade-in delay-400">
-        <div class="stat-number">500+</div>
-        <div class="stat-label">Verified Mechanics</div>
+      <div class="stat-divider-v"></div>
+      <div class="stat-item">
+        <div class="stat-number" data-count-target="500" data-count-suffix="+">0</div>
+        <div class="stat-label">Verified mechanics</div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ FEATURES SECTION ════════════════════════════ -->
+  <div class="lane-divider" aria-hidden="true"><div class="dashes"></div></div>
+
+  <!-- ═══ FEATURES (Broken Grid) ═════════════════════ -->
   <section class="features-section">
     <div class="container">
-      <div class="section-header text-center mb-16 animate-fade-in">
-        <div class="badge badge-brand mb-4">Why Choose Us</div>
-        <h2 class="section-title">Everything you need,<br>when you need it most</h2>
-        <p class="section-subtitle mt-4">Built for modern drivers who demand speed, reliability, and transparency.</p>
+      <div class="section-intro" data-reveal>
+        <h2 class="section-title">Everything you need, when you need it most</h2>
+        <p class="section-lead">Built for modern drivers who demand speed, reliability, and transparency.</p>
       </div>
 
-      <div class="features-grid">
-        <div class="feature-card card card-hover animate-fade-in delay-100">
-          <div class="icon-box icon-box-lg icon-danger mb-5">
-            <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-            </svg>
+      <!-- Featured Hero Card: Emergency Dispatch -->
+      <div class="feature-hero-card" data-reveal>
+        <div class="fhc-icon icon-signal-bg">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div class="fhc-body">
+          <h3>Emergency Dispatch</h3>
+          <p>Immediate response dispatched to your GPS location. Our system alerts the nearest available mechanic in under 30 seconds.</p>
+          <div class="fhc-stats-row">
+            <span class="fhc-stat"><strong>&lt; 30s</strong> dispatch</span>
+            <span class="fhc-stat"><strong>24/7</strong> coverage</span>
           </div>
-          <h3 class="feature-title">Emergency Dispatch</h3>
-          <p class="feature-desc">Immediate response dispatched to your GPS location. Our system alerts the nearest available mechanic in under 30 seconds.</p>
-          <div class="feature-tag">30 sec dispatch</div>
+        </div>
+      </div>
+
+      <!-- Supporting 5-card row -->
+      <div class="features-grid-5">
+        <div class="feat-card feat-card-signal" data-reveal data-reveal-delay="0">
+          <div class="fc-icon icon-signal-bg">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2M9 9h6M9 12h6"/></svg>
+          </div>
+          <h4>AI-Powered Matching</h4>
+          <p>Our algorithm matches you with the best mechanic based on proximity, skill set, and real-time availability for your specific issue.</p>
         </div>
 
-        <div class="feature-card card card-hover animate-fade-in delay-200">
-          <div class="icon-box icon-box-lg icon-brand mb-5">
-            <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2M9 9h6M9 12h6"/>
-            </svg>
+        <div class="feat-card feat-card-signal" data-reveal data-reveal-delay="80">
+          <div class="fc-icon icon-signal-bg">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           </div>
-          <h3 class="feature-title">AI-Powered Matching</h3>
-          <p class="feature-desc">Our algorithm matches you with the best mechanic based on proximity, skill set, and real-time availability for your specific issue.</p>
-          <div class="feature-tag">Smart routing</div>
+          <h4>Live Tracking</h4>
+          <p>Track your mechanic's status in real-time with detailed progress updates from acceptance through job completion.</p>
         </div>
 
-        <div class="feature-card card card-hover animate-fade-in delay-300">
-          <div class="icon-box icon-box-lg icon-success mb-5">
-            <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
+        <div class="feat-card feat-card-amber" data-reveal data-reveal-delay="160">
+          <div class="fc-icon icon-amber-bg">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           </div>
-          <h3 class="feature-title">Live Tracking</h3>
-          <p class="feature-desc">Track your mechanic's status in real-time with detailed progress updates from acceptance through job completion.</p>
-          <div class="feature-tag">Real-time updates</div>
+          <h4>Verified Professionals</h4>
+          <p>Every mechanic on our platform is background-checked, certified, and rated by thousands of customers.</p>
         </div>
 
-        <div class="feature-card card card-hover animate-fade-in delay-100">
-          <div class="icon-box icon-box-lg icon-warning mb-5">
-            <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-            </svg>
+        <div class="feat-card feat-card-amber" data-reveal data-reveal-delay="240">
+          <div class="fc-icon icon-amber-bg">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           </div>
-          <h3 class="feature-title">Verified Professionals</h3>
-          <p class="feature-desc">Every mechanic on our platform is background-checked, certified, and rated by thousands of customers.</p>
-          <div class="feature-tag">Background verified</div>
+          <h4>24/7 Availability</h4>
+          <p>Day or night, weekday or holiday — our network operates around the clock so you're never left stranded.</p>
         </div>
 
-        <div class="feature-card card card-hover animate-fade-in delay-200">
-          <div class="icon-box icon-box-lg icon-info mb-5">
-            <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+        <div class="feat-card feat-card-amber" data-reveal data-reveal-delay="320">
+          <div class="fc-icon icon-amber-bg">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
           </div>
-          <h3 class="feature-title">24/7 Availability</h3>
-          <p class="feature-desc">Day or night, weekday or holiday — our network operates around the clock so you're never left stranded.</p>
-          <div class="feature-tag">Always available</div>
-        </div>
-
-        <div class="feature-card card card-hover animate-fade-in delay-300">
-          <div class="icon-box icon-box-lg icon-purple mb-5">
-            <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-            </svg>
-          </div>
-          <h3 class="feature-title">Full Request History</h3>
-          <p class="feature-desc">Every service request, status update, and completion record stored securely in your personal dashboard.</p>
-          <div class="feature-tag">Full audit trail</div>
+          <h4>Full Request History</h4>
+          <p>Every service request, status update, and completion record stored securely in your personal dashboard.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ HOW IT WORKS ════════════════════════════════ -->
+  <div class="lane-divider" aria-hidden="true"><div class="dashes"></div></div>
+
+  <!-- ═══ PROCESS STEPS (Dashed Route Connector) ═════ -->
   <section class="how-section">
     <div class="container">
-      <div class="section-header text-center mb-16 animate-fade-in">
-        <div class="badge badge-brand mb-4">Simple Process</div>
-        <h2 class="section-title">Up and running<br>in 4 easy steps</h2>
+      <div class="section-intro" data-reveal>
+        <h2 class="section-title">Up and running in 4 easy steps</h2>
       </div>
 
-      <div class="steps-container">
-        <div class="step animate-fade-in delay-100">
-          <div class="step-number">01</div>
-          <div class="step-content">
-            <div class="icon-box icon-box-md icon-brand mb-4">
-              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-              </svg>
-            </div>
-            <h3 class="step-title">Register & Login</h3>
-            <p class="step-desc">Create your free account in under a minute. No credit card required to get started.</p>
-          </div>
+      <div class="steps-route-wrap">
+        <div class="route-connector-line" aria-hidden="true">
+          <svg viewBox="0 0 900 6" preserveAspectRatio="none"><line x1="0" y1="3" x2="900" y2="3" class="rc-dash"/></svg>
+          <div class="sliding-pin" aria-hidden="true">📍</div>
         </div>
 
-        <div class="step-connector"></div>
-
-        <div class="step animate-fade-in delay-200">
-          <div class="step-number">02</div>
-          <div class="step-content">
-            <div class="icon-box icon-box-md icon-danger mb-4">
-              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-              </svg>
-            </div>
-            <h3 class="step-title">Request Help</h3>
-            <p class="step-desc">Describe your issue, confirm your GPS location, and submit your request with one tap.</p>
+        <div class="steps-grid">
+          <div class="step-card" data-reveal data-reveal-delay="0">
+            <span class="step-num">01</span>
+            <h4>Register &amp; Login</h4>
+            <p>Create your free account in under a minute. No credit card required to get started.</p>
           </div>
-        </div>
-
-        <div class="step-connector"></div>
-
-        <div class="step animate-fade-in delay-300">
-          <div class="step-number">03</div>
-          <div class="step-content">
-            <div class="icon-box icon-box-md icon-success mb-4">
-              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <h3 class="step-title">Mechanic Assigned</h3>
-            <p class="step-desc">Our AI instantly matches and dispatches the nearest qualified mechanic to your location.</p>
+          <div class="step-card" data-reveal data-reveal-delay="120">
+            <span class="step-num">02</span>
+            <h4>Request Help</h4>
+            <p>Describe your issue, confirm your GPS location, and submit your request with one tap.</p>
           </div>
-        </div>
-
-        <div class="step-connector"></div>
-
-        <div class="step animate-fade-in delay-400">
-          <div class="step-number">04</div>
-          <div class="step-content">
-            <div class="icon-box icon-box-md icon-warning mb-4">
-              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-              </svg>
-            </div>
-            <h3 class="step-title">Track in Real-Time</h3>
-            <p class="step-desc">Follow your request's status live — from pending to accepted, in-progress, and completed.</p>
+          <div class="step-card" data-reveal data-reveal-delay="240">
+            <span class="step-num">03</span>
+            <h4>Mechanic Assigned</h4>
+            <p>Our AI instantly matches and dispatches the nearest qualified mechanic to your location.</p>
+          </div>
+          <div class="step-card" data-reveal data-reveal-delay="360">
+            <span class="step-num">04</span>
+            <h4>Track in Real-Time</h4>
+            <p>Follow your request's status live — from pending to accepted, in-progress, and completed.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ TESTIMONIALS ════════════════════════════════ -->
+  <div class="lane-divider" aria-hidden="true"><div class="dashes"></div></div>
+
+  <!-- ═══ TESTIMONIALS (Staggered Reveal) ════════════ -->
   <section class="testimonials-section">
     <div class="container">
-      <div class="section-header text-center mb-16 animate-fade-in">
-        <div class="badge badge-brand mb-4">Testimonials</div>
-        <h2 class="section-title">Trusted by thousands<br>of drivers</h2>
+      <div class="section-intro" data-reveal>
+        <h2 class="section-title">Trusted by thousands of drivers</h2>
       </div>
 
-      <div class="testimonials-grid">
-        <div class="testimonial-card card animate-fade-in delay-100">
-          <div class="testimonial-stars">★★★★★</div>
-          <p class="testimonial-text">"Got a flat tyre on the highway at midnight. Within 10 minutes a mechanic was there. Absolutely life-saving service!"</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">P</div>
-            <div>
-              <div class="author-name">Priya Sharma</div>
-              <div class="author-location">Mumbai, MH</div>
-            </div>
+      <div class="testimonials-stagger">
+        <div class="test-card test-side" data-reveal data-reveal-delay="0">
+          <div class="test-stars">★★★★★</div>
+          <p class="test-text">"Got a flat tyre on the highway at midnight. Within 10 minutes a mechanic was there. Absolutely life-saving service!"</p>
+          <div class="test-author">
+            <div class="author-circle">P</div>
+            <div><strong>Priya Sharma</strong><br><span class="author-loc">Mumbai, MH</span></div>
           </div>
         </div>
 
-        <div class="testimonial-card card animate-fade-in delay-200">
-          <div class="testimonial-stars">★★★★★</div>
-          <p class="testimonial-text">"The real-time tracking feature is incredible. I could see exactly when my mechanic was approaching. No anxiety, just confidence."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">A</div>
-            <div>
-              <div class="author-name">Arjun Mehta</div>
-              <div class="author-location">Bangalore, KA</div>
-            </div>
+        <div class="test-card test-featured" data-reveal data-reveal-delay="120">
+          <div class="featured-tag">Featured review</div>
+          <div class="test-stars">★★★★★</div>
+          <p class="test-text">"The real-time tracking feature is incredible. I could see exactly when my mechanic was approaching. No anxiety, just confidence."</p>
+          <div class="test-author">
+            <div class="author-circle circle-signal">A</div>
+            <div><strong>Arjun Mehta</strong><br><span class="author-loc">Bangalore, KA</span></div>
           </div>
         </div>
 
-        <div class="testimonial-card card animate-fade-in delay-300">
-          <div class="testimonial-stars">★★★★★</div>
-          <p class="testimonial-text">"Dead battery at 6 AM before a job interview. Service on Wheels saved the day — professional, fast, and very affordable."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">R</div>
-            <div>
-              <div class="author-name">Rahul Gupta</div>
-              <div class="author-location">Delhi, DL</div>
-            </div>
+        <div class="test-card test-side" data-reveal data-reveal-delay="240">
+          <div class="test-stars">★★★★★</div>
+          <p class="test-text">"Dead battery at 6 AM before a job interview. Service on Wheels saved the day — professional, fast, and very affordable."</p>
+          <div class="test-author">
+            <div class="author-circle">R</div>
+            <div><strong>Rahul Gupta</strong><br><span class="author-loc">Delhi, DL</span></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ CTA SECTION ═════════════════════════════════ -->
-  <section class="cta-section animate-fade-in">
+  <div class="lane-divider" aria-hidden="true"><div class="dashes"></div></div>
+
+  <!-- ═══ CTA ════════════════════════════════════════ -->
+  <section class="cta-section" data-reveal>
     <div class="container">
-      <div class="cta-card animate-fade-in">
-        <div class="cta-content">
-          <h2 class="cta-title">Ready to drive with confidence?</h2>
-          <p class="cta-subtitle">Join thousands of drivers who trust Service on Wheels for peace of mind on every journey.</p>
-          <div class="cta-buttons">
-            <a routerLink="/register" class="btn btn-primary btn-xl">
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
-              Get Started Free
-            </a>
-            <a routerLink="/login" class="btn btn-ghost btn-xl" style="color:rgba(255,255,255,0.9); border:1px solid rgba(255,255,255,0.2);">
-              Already have an account?
-            </a>
-          </div>
+      <div class="cta-raised-band">
+        <div class="cta-text">
+          <h2>Ready to drive with confidence?</h2>
+          <p>Join thousands of drivers who trust Service on Wheels for peace of mind on every journey.</p>
+        </div>
+        <div class="cta-btns">
+          <a routerLink="/register" class="btn btn-signal">Get Started Free</a>
+          <a routerLink="/login" class="btn btn-raised">Already have an account?</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ FOOTER ══════════════════════════════════════ -->
+  <!-- ═══ FOOTER ═════════════════════════════════════ -->
   <footer class="app-footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <div class="brand flex items-center gap-3 mb-4">
+        <div class="brand" style="display:flex; align-items:center; gap:0.625rem; margin-bottom:1rem;">
           <div class="brand-icon" style="width:36px;height:36px;border-radius:9px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
-          <span style="font-weight:800;font-size:1.1rem;">Service on Wheels</span>
+          <span style="font-family:var(--font-heading);font-weight:800;font-size:1.15rem;color:var(--paper);">Service on Wheels</span>
         </div>
         <p class="footer-tagline">AI-powered roadside assistance, available 24/7 anywhere you are.</p>
-        <div class="social-links mt-4">
-          <a href="#" class="social-link" aria-label="Twitter">
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
-          <a href="#" class="social-link" aria-label="LinkedIn">
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          </a>
-          <a href="#" class="social-link" aria-label="Instagram">
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-          </a>
+        <div class="social-links" style="margin-top:1rem;">
+          <a href="#" class="social-link" aria-label="Twitter"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          <a href="#" class="social-link" aria-label="LinkedIn"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          <a href="#" class="social-link" aria-label="Instagram"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
         </div>
       </div>
 
@@ -402,7 +343,9 @@
     </div>
 
     <div class="footer-bottom">
-      <div class="container footer-bottom-inner"></div>
+      <div class="container footer-bottom-inner">
+        <span>© 2026 Service on Wheels</span>
+      </div>
     </div>
   </footer>
 

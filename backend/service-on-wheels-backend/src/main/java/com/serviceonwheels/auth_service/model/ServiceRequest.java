@@ -73,6 +73,8 @@ public class ServiceRequest {
 
     private LocalDateTime cancelledAt;
 
+    private PaymentStatus paymentStatus;
+
     @CreatedDate
     private LocalDateTime createdAt;
 }

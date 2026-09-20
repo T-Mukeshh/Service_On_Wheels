@@ -100,7 +100,7 @@ public class PasswordResetService {
             } catch (MailException | MessagingException e) {
                 // Log the error but do NOT rethrow — the response must stay identical
                 // whether the email exists or not, to prevent account enumeration.
-                log.error("Failed to send reset email via SMTP to {}: {}", email, e.getMessage());
+                log.error("Failed to send reset email via SMTP to {}: ", email, e);
             }
         }
 
@@ -177,7 +177,7 @@ public class PasswordResetService {
      * Sends the reset email via Spring Boot's JavaMailSender using an HTML template.
      */
     private void sendResetEmail(String email, String token) throws MailException, MessagingException {
-        String resetUrl = frontendResetUrl + token;
+        String resetUrl = frontendResetUrl + "?token=" + token;
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
