@@ -126,4 +126,4 @@ Never commit .env files or real secrets. Use environment variables in your deplo
 
 ## Author
 
-T Mukesh — [github.com/PhoenixX18](https://github.com/PhoenixX18)
+T Mukesh — https://github.com/T-Mukeshh
