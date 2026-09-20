@@ -1,0 +1,196 @@
+# Phase 5: Payment Service, Redis Rate Limiting & Observability
+
+## Goal
+
+Add three production-critical capabilities to Service On Wheels:
+1. **Payment Service** — Razorpay-based payment flow triggered after service completion
+2. **Redis-backed Rate Limiting** — Replace the in-memory `ConcurrentHashMap` with Redis so rate limits survive restarts and scale across instances
+3. **Observability Stack** — Prometheus metrics, Grafana dashboards, and Sentry error tracking
+
+---
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Payment Gateway Choice**: This plan uses **Razorpay** (India's most popular gateway, free test mode, INR-native). If you prefer Stripe or another provider, let me know before I start.
+
+> [!IMPORTANT]
+> **Razorpay API Keys**: You'll need to create a free Razorpay test account at [dashboard.razorpay.com](https://dashboard.razorpay.com) to get `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`. The code will work with test keys — no real charges.
+
+> [!WARNING]
+> **Sentry DSN**: Sentry requires a project DSN (free tier at [sentry.io](https://sentry.io)). If you don't want to create a Sentry account right now, I can make it optional — the app will work fine without it, just with console-based error logging instead.
+
+## Open Questions
+
+> [!NOTE]
+> **Pricing Model**: Should service charges be a flat rate per issue type (e.g., Flat Tire ₹500, Engine ₹1500), or dynamically calculated based on distance + service time? **This plan uses a flat-rate pricing table per issue type** since it's simpler and more predictable. Let me know if you want distance-based pricing instead.
+
+---
+
+## Proposed Changes
+
+### Component 1: Payment Service (Backend)
+
+#### [NEW] [`Payment.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/model/Payment.java)
+MongoDB document model for payments:
+- `id`, `serviceRequestId`, `userId`, `amount`, `currency` (INR)
+- `razorpayOrderId`, `razorpayPaymentId`, `razorpaySignature`
+- `status` enum: `CREATED`, `AUTHORIZED`, `CAPTURED`, `FAILED`, `REFUNDED`
+- `createdAt`, `paidAt`
+
+#### [NEW] [`PaymentStatus.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/model/PaymentStatus.java)
+Enum: `CREATED`, `AUTHORIZED`, `CAPTURED`, `FAILED`, `REFUNDED`
+
+#### [NEW] [`PaymentRepository.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/repository/PaymentRepository.java)
+Spring Data MongoDB repository with `findByServiceRequestId()` and `findByRazorpayOrderId()`.
+
+#### [NEW] [`PaymentService.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/service/PaymentService.java)
+Business logic:
+- `createOrder(requestId)` → calculates amount from issue type pricing table, calls Razorpay Order API, saves `Payment` doc
+- `verifyPayment(razorpayOrderId, paymentId, signature)` → validates HMAC-SHA256 signature, marks payment as CAPTURED
+- `getPaymentByRequestId(requestId)` → returns payment status for a service request
+- **Pricing table**: Flat-rate `Map<String, Integer>` (e.g., `"Flat Tire" → 50000` = ₹500 in paise)
+
+#### [NEW] [`PaymentController.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/controller/PaymentController.java)
+REST endpoints:
+- `POST /api/payments/create-order/{requestId}` → creates Razorpay order, returns order ID + amount + key
+- `POST /api/payments/verify` → verifies payment signature after checkout
+- `GET /api/payments/{requestId}` → get payment status for a request
+
+#### [NEW] DTOs:
+- [`CreateOrderResponse.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/dto/CreateOrderResponse.java) — `orderId`, `amount`, `currency`, `keyId`
+- [`VerifyPaymentRequest.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/dto/VerifyPaymentRequest.java) — `razorpayOrderId`, `razorpayPaymentId`, `razorpaySignature`
+- [`PaymentResponse.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/dto/PaymentResponse.java) — full payment details for the frontend
+
+#### [NEW] [`PaymentNotFoundException.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/exception/PaymentNotFoundException.java)
+
+#### [MODIFY] [`pom.xml`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/pom.xml)
+Add Razorpay Java SDK dependency: `com.razorpay:razorpay-java:1.4.6`
+
+#### [MODIFY] [`application.properties`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/resources/application.properties)
+Add `razorpay.key.id` and `razorpay.key.secret` from env vars.
+
+#### [MODIFY] [`SecurityConfig.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/config/SecurityConfig.java)
+Payment endpoints require `USER` role (authenticated users pay for their own service).
+
+#### [MODIFY] [`GlobalExceptionHandler.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/exception/GlobalExceptionHandler.java)
+Add handler for `PaymentNotFoundException`.
+
+#### [MODIFY] [`ServiceRequest.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/model/ServiceRequest.java)
+Add `paymentStatus` field (denormalized for quick queries on My Requests page).
+
+#### [MODIFY] [`ServiceRequestResponse.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/dto/ServiceRequestResponse.java) + [`RequestLifecycleService.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/service/RequestLifecycleService.java)
+Include `paymentStatus` in response mapping.
+
+---
+
+### Component 2: Payment UI (Frontend)
+
+#### [MODIFY] [`service-request.models.ts`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/customer-app/src/app/models/service-request.models.ts)
+Add `paymentStatus` field to `ServiceRequestResponse`.
+
+#### [NEW] [`payment.models.ts`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/customer-app/src/app/models/payment.models.ts)
+TypeScript interfaces for `CreateOrderResponse`, `VerifyPaymentRequest`, `PaymentResponse`.
+
+#### [NEW] [`payment.service.ts`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/customer-app/src/app/services/payment.service.ts)
+Angular service: `createOrder()`, `verifyPayment()`, `getPayment()`. Also handles loading the Razorpay checkout.js script dynamically.
+
+#### [MODIFY] [`my-requests` page](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/customer-app/src/app/pages/my-requests)
+Add "Pay Now" button on completed requests that haven't been paid yet. Button opens Razorpay checkout modal.
+
+#### [MODIFY] [`index.html`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/customer-app/src/index.html)
+Add Razorpay checkout script tag.
+
+---
+
+### Component 3: Redis-backed Rate Limiting
+
+#### [MODIFY] [`pom.xml`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/pom.xml)
+Add `spring-boot-starter-data-redis` dependency.
+
+#### [NEW] [`RedisConfig.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/config/RedisConfig.java)
+Configure `RedisTemplate` and `LettuceConnectionFactory` with env-based host/port.
+
+#### [MODIFY] [`RateLimitFilter.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/security/RateLimitFilter.java)
+Replace `ConcurrentHashMap<String, Bucket>` with a Redis-backed sliding window counter:
+- Use `RedisTemplate` with `INCR` + `EXPIRE` (simple atomic counter per IP with TTL)
+- Falls back to in-memory if Redis is unavailable (graceful degradation)
+- Still 10 req/min per IP for `/api/auth/**`
+
+#### [MODIFY] [`application.properties`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/resources/application.properties)
+Add `spring.data.redis.host` and `spring.data.redis.port` from env vars.
+
+#### [MODIFY] [`docker-compose.yml`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/docker-compose.yml)
+Add `redis` service (Redis 7 Alpine, port 6379, with health check).
+
+#### [MODIFY] [`.env.example`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/.env.example)
+Add Redis and Razorpay env vars.
+
+---
+
+### Component 4: Observability Stack
+
+#### [MODIFY] [`pom.xml`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/pom.xml)
+Add:
+- `micrometer-registry-prometheus` — exports Spring Boot metrics to Prometheus format
+- `io.sentry:sentry-spring-boot-starter-jakarta:7.x` — Sentry error tracking
+
+#### [MODIFY] [`application.properties`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/resources/application.properties)
+- Expose Prometheus endpoint: `management.endpoints.web.exposure.include=health,info,prometheus`
+- Sentry DSN from env var (optional, disabled if blank)
+
+#### [MODIFY] [`SecurityConfig.java`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/backend/service-on-wheels-backend/src/main/java/com/serviceonwheels/auth_service/config/SecurityConfig.java)
+Whitelist `/actuator/prometheus` for Prometheus scraping (no auth needed for internal metrics).
+
+#### [NEW] [`prometheus/prometheus.yml`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/prometheus/prometheus.yml)
+Prometheus scrape config:
+- Scrape `backend:8081/actuator/prometheus` every 15s
+- Labels: `job=sow-backend`
+
+#### [NEW] [`grafana/provisioning/datasources/datasource.yml`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/grafana/provisioning/datasources/datasource.yml)
+Auto-provision Prometheus as a Grafana data source.
+
+#### [NEW] [`grafana/provisioning/dashboards/dashboard.yml`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/grafana/provisioning/dashboards/dashboard.yml) + [`grafana/dashboards/sow-overview.json`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/grafana/dashboards/sow-overview.json)
+Pre-built Grafana dashboard showing:
+- Request rate (per endpoint)
+- Response time percentiles (p50, p95, p99)
+- JVM memory & GC stats
+- HTTP error rates (4xx, 5xx)
+- Rate limiter rejections counter
+
+#### [MODIFY] [`docker-compose.yml`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/docker-compose.yml)
+Add 2 new services:
+- **`prometheus`**: Official Prometheus image (port 9090), mounts `prometheus.yml`
+- **`grafana`**: Official Grafana image (port 3000), auto-provisions datasource + dashboard, admin password from env var
+
+#### [MODIFY] [`nginx/nginx.conf`](file:///c:/Users/T MUKESH/Desktop/ServiceOnWheels1/nginx/nginx.conf)
+Add location blocks to proxy Grafana (`/grafana/`) and optionally Prometheus (`/prometheus/`), restricted to internal use.
+
+---
+
+## File Summary
+
+| Action | Count | Files |
+|---|---|---|
+| **NEW** | ~14 | Payment model, enum, repo, service, controller, 3 DTOs, exception, Redis config, Prometheus config, Grafana provisioning (3 files), payment frontend (2 files) |
+| **MODIFY** | ~12 | pom.xml, application.properties, SecurityConfig, GlobalExceptionHandler, docker-compose.yml, .env.example, nginx.conf, RateLimitFilter, ServiceRequest model, ServiceRequestResponse, RequestLifecycleService, frontend models |
+
+---
+
+## Verification Plan
+
+### Automated Tests
+```bash
+# Run existing + new backend tests
+cd backend/service-on-wheels-backend
+mvn test
+```
+- Add `PaymentServiceTest.java` — test order creation, signature verification, pricing table
+- Verify all 51+ existing tests still pass
+
+### Manual Verification
+1. **Payment flow**: After completing a service request, click "Pay Now" → Razorpay test checkout opens → use test card `4111 1111 1111 1111` → payment captured
+2. **Redis rate limiting**: `docker-compose up` → hit `/api/auth/login` 11 times rapidly → 11th returns `429 Too Many Requests` → verify Redis key exists with `docker exec sow-redis redis-cli keys "*"`
+3. **Prometheus**: Visit `http://localhost:9090/targets` → backend target should be UP
+4. **Grafana**: Visit `http://localhost:3000` (admin/admin) → SOW Overview dashboard shows live metrics
+5. **Sentry** (if configured): Trigger a 500 error → verify it appears in Sentry dashboard
